@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobPulse | Personal Job Application Tracker</title>
+  <meta name="description" content="A premium, simple, and interactive job application tracker for managing your job hunt funnel.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 5 8 5V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 12V16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 14H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1 class="logo-text">Job<span>Pulse</span></h1>
+      </div>
+      <div class="header-actions">
+        <button id="exportBtn" class="btn btn-secondary flex-center" title="Export applications data to a JSON file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Export
+        </button>
+        <button id="importBtn" class="btn btn-secondary flex-center" title="Import applications data from a JSON file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Import
+        </button>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+        <button id="newAppBtn" class="btn btn-primary flex-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="15" y2="12"/></svg>
+          New Application
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Dashboard -->
+    <section class="metrics-grid">
+      <div class="metric-card card-total">
+        <div class="metric-info">
+          <span class="metric-label">Total Applications</span>
+          <span id="statTotal" class="metric-value">0</span>
+        </div>
+        <div class="metric-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+      </div>
+      <div class="metric-card card-active">
+        <div class="metric-info">
+          <span class="metric-label">Active Funnel</span>
+          <span id="statActive" class="metric-value">0</span>
+        </div>
+        <div class="metric-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+      </div>
+      <div class="metric-card card-interviews">
+        <div class="metric-info">
+          <span class="metric-label">Interviews Scheduled</span>
+          <span id="statInterviews" class="metric-value">0</span>
+        </div>
+        <div class="metric-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+      </div>
+      <div class="metric-card card-success">
+        <div class="metric-info">
+          <span class="metric-label">Success Rate</span>
+          <span id="statSuccessRate" class="metric-value">0%</span>
+        </div>
+        <div class="metric-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar / Search / Filter -->
+    <section class="toolbar-section">
+      <div class="search-box">
+        <div class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Search by company or role...">
+      </div>
+
+      <div class="toolbar-filters">
+        <div class="select-wrapper">
+          <select id="filterStatus">
+            <option value="all">All Statuses</option>
+            <option value="wishlist">Wishlist</option>
+            <option value="applied">Applied</option>
+            <option value="interviewing">Interviewing</option>
+            <option value="offered">Offered</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        <div class="select-wrapper">
+          <select id="filterLocation">
+            <option value="all">All Locations</option>
+            <option value="Remote">Remote</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="On-site">On-site</option>
+          </select>
+        </div>
+
+        <div class="select-wrapper">
+          <select id="sortBy">
+            <option value="newest">Newest Applied</option>
+            <option value="oldest">Oldest Applied</option>
+            <option value="salary-desc">Salary: High to Low</option>
+            <option value="company-asc">Company: A-Z</option>
+          </select>
+        </div>
+
+        <div class="view-toggle-container">
+          <button id="viewKanbanBtn" class="toggle-btn active" title="Kanban View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          </button>
+          <button id="viewListBtn" class="toggle-btn" title="List Table View">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Kanban Board View -->
+      <div id="kanbanView" class="view-panel active">
+        <div class="kanban-board">
+          <!-- Wishlist Lane -->
+          <div class="kanban-lane" data-status="wishlist">
+            <div class="lane-header header-wishlist">
+              <span class="lane-title">Wishlist</span>
+              <span class="lane-badge count-wishlist">0</span>
+            </div>
+            <div class="lane-cards" id="lane-wishlist"></div>
+          </div>
+
+          <!-- Applied Lane -->
+          <div class="kanban-lane" data-status="applied">
+            <div class="lane-header header-applied">
+              <span class="lane-title">Applied</span>
+              <span class="lane-badge count-applied">0</span>
+            </div>
+            <div class="lane-cards" id="lane-applied"></div>
+          </div>
+
+          <!-- Interviewing Lane -->
+          <div class="kanban-lane" data-status="interviewing">
+            <div class="lane-header header-interviewing">
+              <span class="lane-title">Interviewing</span>
+              <span class="lane-badge count-interviewing">0</span>
+            </div>
+            <div class="lane-cards" id="lane-interviewing"></div>
+          </div>
+
+          <!-- Offered Lane -->
+          <div class="kanban-lane" data-status="offered">
+            <div class="lane-header header-offered">
+              <span class="lane-title">Offered</span>
+              <span class="lane-badge count-offered">0</span>
+            </div>
+            <div class="lane-cards" id="lane-offered"></div>
+          </div>
+
+          <!-- Rejected Lane -->
+          <div class="kanban-lane" data-status="rejected">
+            <div class="lane-header header-rejected">
+              <span class="lane-title">Rejected</span>
+              <span class="lane-badge count-rejected">0</span>
+            </div>
+            <div class="lane-cards" id="lane-rejected"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- List/Table View -->
+      <div id="listView" class="view-panel">
+        <div class="table-container">
+          <table class="applications-table">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Job Title</th>
+                <th>Status</th>
+                <th>Date Applied</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+          <div id="tableEmptyState" class="empty-state" style="display: none;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <p>No applications match your criteria.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Form Modal (Add / Edit) -->
+  <div id="appModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">New Application</h2>
+        <button id="closeModalBtn" class="modal-close-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="appForm" novalidate>
+        <input type="hidden" id="appId">
+        
+        <div class="form-grid">
+          <!-- Company Name -->
+          <div class="form-group span-half">
+            <label for="companyName">Company <span class="required">*</span></label>
+            <input type="text" id="companyName" placeholder="e.g. Google" required>
+            <span class="error-message">Company name is required</span>
+          </div>
+
+          <!-- Job Title -->
+          <div class="form-group span-half">
+            <label for="jobTitle">Job Title <span class="required">*</span></label>
+            <input type="text" id="jobTitle" placeholder="e.g. Frontend Engineer" required>
+            <span class="error-message">Job title is required</span>
+          </div>
+
+          <!-- Status -->
+          <div class="form-group span-third">
+            <label for="appStatus">Status</label>
+            <div class="select-wrapper modal-select">
+              <select id="appStatus">
+                <option value="wishlist">Wishlist</option>
+                <option value="applied" selected>Applied</option>
+                <option value="interviewing">Interviewing</option>
+                <option value="offered">Offered</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Date Applied -->
+          <div class="form-group span-third">
+            <label for="dateApplied">Date Applied</label>
+            <input type="date" id="dateApplied">
+          </div>
+
+          <!-- Location Type -->
+          <div class="form-group span-third">
+            <label for="locationType">Location Type</label>
+            <div class="select-wrapper modal-select">
+              <select id="locationType">
+                <option value="Remote" selected>Remote</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Job URL -->
+          <div class="form-group span-half">
+            <label for="jobUrl">Job Post URL</label>
+            <input type="url" id="jobUrl" placeholder="https://jobs.company.com/...">
+            <span class="error-message">Please enter a valid URL</span>
+          </div>
+
+          <!-- Salary -->
+          <div class="form-group span-half">
+            <label for="salary">Salary / Compensation</label>
+            <div class="salary-input-wrapper">
+              <span class="salary-symbol">$</span>
+              <input type="text" id="salary" placeholder="e.g. 120,000 or €85k">
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group span-full">
+            <label for="notes">Notes & Job Details</label>
+            <textarea id="notes" rows="4" placeholder="Requirements, contact info, preparation notes, follow-up dates..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="saveAppBtn" class="btn btn-primary">Save Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript file -->
+  <script src="app.js"></script>
+</body>
+</html>
